@@ -12,6 +12,12 @@ const Quotes = () => {
   const [characterOptions, setCharacterOptions] = useState([]);
   const [characters, setCharacters] = useState([]);
   const [characterPickerOpen, setCharacterPickerOpen] = useState(false);
+  const [actOptions, setActOptions] = useState(Array.from({length: 5}, (_, i) => i + 1).map((i) => ({label: `Act ${i}`, value: `Act ${i}`})));
+  const [act, setAct] = useState();
+  const [actPickerOpen, setActPickerOpen] = useState(false);
+  const [sceneOptions, setSceneOptions] = useState(Array.from({length: 5}, (_, i) => i + 1).map((i) => ({label: `Scene ${i}`, value: `Scene ${i}`})));
+  const [scene, setScene] = useState();
+  const [scenePickerOpen, setScenePickerOpen] = useState(false);
 
   useEffect(() => {
     fetch("https://gold-prepared-barnacle-234.mypinata.cloud/ipfs/QmVz9dLBsw8aanRqwF6sGaR7VQAztUfYULvjdWC1q5EnC9")
@@ -29,7 +35,9 @@ const Quotes = () => {
 
   const checkShowQuote = (quote) => {
     if (quote.quote.toLowerCase().includes(searchText.toLowerCase())
-          && (!characters.length || characters.includes(quote.character))) {
+          && (!characters.length || characters.includes(quote.character))
+          && (!act || quote.act === act)
+          && (!scene || quote.scene === scene)) {
       return true;
     }
     return false
@@ -71,9 +79,38 @@ const Quotes = () => {
       setValue={setCharacters}
       setItems={setCharacterOptions}
       multiple={true}
+      placeholder={'Select characters'}
+      zIndex={3000}
+    zIndexInverse={1000}
+    />
+    <DropDownPicker
+      open={actPickerOpen}
+      value={act}
+      items={actOptions}
+      setOpen={setActPickerOpen}
+      setValue={setAct}
+      setItems={setActOptions}
+      placeholder={'Select act'}
+      zIndex={2000}
+    zIndexInverse={2000}
+    />
+        <DropDownPicker
+      open={scenePickerOpen}
+      value={scene}
+      items={sceneOptions}
+      setOpen={setScenePickerOpen}
+      setValue={setScene}
+      setItems={setSceneOptions}
+      placeholder={'Select scene'}
+      zIndex={1000}
+      zIndexInverse={3000}
     />
     <View style={{flexDirection: 'row', padding: 20}}>
-    <Pressable onPress={() => setCharacters([])} style={{margin: 20}}>
+    <Pressable onPress={() => {
+      setCharacters([]);
+      setAct();
+      setScene();
+    }} style={{margin: 20}}>
       <Text>Reset</Text>
       </Pressable>
       <Pressable onPress={() => setShowFilters(false)} style={{margin: 20}}>
