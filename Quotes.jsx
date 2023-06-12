@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Quote from './Quote';
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState([]);
@@ -17,9 +18,9 @@ const Quotes = () => {
   });
 
   return (
-    <View>
-      {quotes.map((quote) => <Text>{quote.quote}</Text>)}
-    </View>
+    <ScrollView>
+      {quotes.map((quote) => <Quote key={quote.quote} quote={quote} />)}
+    </ScrollView>
   )
 }
 
