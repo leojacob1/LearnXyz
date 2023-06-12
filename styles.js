@@ -21,6 +21,11 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1
   },
+  modal: {
+    padding: 30,
+    backgroundColor: '#FCF1E9',
+    flex: 1
+  }
 });
 
 export default styles;
