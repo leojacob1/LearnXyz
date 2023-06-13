@@ -16,7 +16,6 @@ import Quote from "./Quote";
 import styles from "./styles";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
-import QuoteModal from "./QuoteModal";
 import db from "./firestore";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -42,7 +41,6 @@ const Quotes = ({ quotes }) => {
   );
   const [scene, setScene] = useState();
   const [scenePickerOpen, setScenePickerOpen] = useState(false);
-  const [showQuote, setShowQuote] = useState(null);
 
   useEffect(() => {
     if (quotes) {
@@ -86,11 +84,7 @@ const Quotes = ({ quotes }) => {
         </View>
         {quotes.map((quote) =>
           checkShowQuote(quote) ? (
-            <Quote
-              key={quote.quote}
-              quote={quote}
-              setShowQuote={setShowQuote}
-            />
+            <Quote key={quote.quote} quote={quote} />
           ) : null
         )}
         {!quotes.filter(checkShowQuote).length ? (
@@ -183,7 +177,6 @@ const Quotes = ({ quotes }) => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      <QuoteModal quote={showQuote} setShowQuote={setShowQuote} />
     </SafeAreaView>
   );
 };

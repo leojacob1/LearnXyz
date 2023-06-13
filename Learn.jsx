@@ -35,11 +35,12 @@ const Learn = ({ quotes }) => {
   const [characters, setCharacters] = useState([]);
   const [correctCount, setCorrectCount] = useState(0);
   const [activeGuess, setActiveGuess] = useState();
+  const [availableGuesses, setAvailableGuesses] = useState([]);
 
   const getWrongCharacters = (correctCharacter) => {
     const usedCharacters = [correctCharacter];
     let newIndex;
-    while (usedCharacters.length <= 4) {
+    while (usedCharacters.length < 4) {
       newIndex = Math.floor(Math.random() * characters.length);
       if (!usedCharacters.includes(characters[newIndex])) {
         usedCharacters.push(characters[newIndex]);
@@ -60,69 +61,122 @@ const Learn = ({ quotes }) => {
     setTimeout(() => {
       setActiveGuess();
       setActiveQuotes(activeQuotes.slice(1));
-    }, 2000);
+    }, 200);
+  };
+
+  const resetQuotes = () => {
+    setCorrectCount(0);
+    const randomQuotes = shuffle(quotes);
+    const quotesWithWrongAnswers = randomQuotes.map((quote) => {
+      const wrongCharacters = getWrongCharacters(quote.character);
+      return {
+        ...quote,
+        wrong1: wrongCharacters[0],
+        wrong2: wrongCharacters[1],
+        wrong3: wrongCharacters[2],
+      };
+    });
+    // setActiveQuotes(randomQuotes);
+    setActiveQuotes(quotesWithWrongAnswers);
   };
 
   useEffect(() => {
-    if (quotes) {
+    if (quotes.length) {
       setCharacters([...new Set(quotes.map((quote) => quote.character))]);
-
-      const randomQuotes = shuffle(quotes);
-      const quotesWithWrongAnswers = randomQuotes.map((quote) => {
-        const wrongCharacters = getWrongCharacters(quote.character);
-        return {
-          ...quote,
-          wrong1: wrongCharacters[1],
-          wrong2: wrongCharacters[2],
-          wrong3: wrongCharacters[3],
-        };
-      });
-      // setActiveQuotes(randomQuotes);
-      setActiveQuotes(quotesWithWrongAnswers);
     }
   }, [quotes]);
-  console.log(activeQuotes[0]);
-  const optionElements = activeQuotes.length
-    ? [
-        <Pressable
-          onPress={() => handleGuess(activeQuotes[0].character)}
-          key={activeQuotes[0].character}
-          style={styles.button}
-        >
-          <Text style={styles.text}>{activeQuotes[0].character}</Text>
-        </Pressable>,
-        <Pressable
-          onPress={() => handleGuess(activeQuotes[0].wrong1)}
-          key={activeQuotes[0].wrong1}
-          style={styles.button}
-        >
-          <Text style={styles.text}>{activeQuotes[0].wrong2}</Text>
-        </Pressable>,
-        <Pressable
-          onPress={() => handleGuess(activeQuotes[0].wrong2)}
-          key={activeQuotes[0].wrong2}
-          style={styles.button}
-        >
-          <Text style={styles.text}>{activeQuotes[0].wrong2}</Text>
-        </Pressable>,
-        <Pressable
-          onPress={() => handleGuess(activeQuotes[0].wrong3)}
-          key={activeQuotes[0].wrong3}
-          style={styles.button}
-        >
-          <Text style={styles.text}>{activeQuotes[0].wrong3}</Text>
-        </Pressable>,
-      ]
-    : [];
+
+  useEffect(() => {
+    if (characters.length) {
+      resetQuotes();
+    }
+  }, [characters]);
+
+  useEffect(() => {
+    if (activeQuotes.length) {
+      setAvailableGuesses(
+        shuffle([
+          activeQuotes[0].character,
+          activeQuotes[0].wrong1,
+          activeQuotes[0].wrong2,
+          activeQuotes[0].wrong3,
+        ])
+      );
+    }
+  }, [activeQuotes]);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#FCF1E9",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+      }}
+    >
       {activeQuotes.length ? (
-        <View key={activeQuotes[0].quote}>
-          <Text>{activeQuotes[0].quote}</Text>
-          <Text>Who said it?</Text>
-          {shuffle(optionElements)}
+        <View
+          style={{
+            width: "100%",
+            padding: 20,
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <View style={styles.quote}>
+            <Text style={{ fontWeight: "bold", fontSize: 24 }}>
+              "{activeQuotes[0].quote}"
+            </Text>
+          </View>
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontStyle: "italic", fontSize: 24 }}>
+                Who said it?
+              </Text>
+            </View>
+
+            {availableGuesses.map((guess) => (
+              <Pressable
+                onPress={() => handleGuess(guess)}
+                key={guess}
+                style={{
+                  ...styles.button,
+                  ...(activeGuess === guess &&
+                  activeQuotes[0].character === guess
+                    ? {
+                        backgroundColor: "green",
+                      }
+                    : {}),
+                  ...(activeGuess === guess &&
+                  activeQuotes[0].character !== guess
+                    ? {
+                        backgroundColor: "red",
+                      }
+                    : {}),
+                }}
+                disabled={!!activeGuess}
+              >
+                <Text style={styles.text}>{guess}</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
-      ) : null}
+      ) : (
+        <View style={{ justifyContent: "center", flex: 1 }}>
+          <Text style={{ fontSize: 64 }}>
+            {correctCount} / {quotes.length}
+          </Text>
+          <Pressable style={styles.button} onPress={resetQuotes}>
+            <Text style={styles.text}>Play again</Text>
+          </Pressable>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
