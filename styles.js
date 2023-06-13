@@ -16,15 +16,26 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    margin: 12,
     borderWidth: 1,
     padding: 10,
-    flex: 1
+    flex: 1,
+    marginRight: 12,
   },
   modal: {
     padding: 30,
     backgroundColor: '#FCF1E9',
-    flex: 1
+    height: '100%'
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalBackdrop: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 5000,
   }
 });
 

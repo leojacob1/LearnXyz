@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import Quote from './Quote';
 import styles from './styles';
-import { Search } from '@mui/icons-material';
+import { Feather, AntDesign } from '@expo/vector-icons'; 
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const Quotes = () => {
@@ -45,32 +45,41 @@ const Quotes = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      
-      <ScrollView keyboardShouldPersistTaps='handled' keyboardDismissMode='on-drag'>
-      <View style={{flexDirection: 'row'}}>
+      <ScrollView keyboardShouldPersistTaps='handled' keyboardDismissMode='on-drag' style={{width: '100%'}}>
+      <View style={{flexDirection: 'row', flex: 1, padding: 10 }}>
       <TextInput
         style={styles.input}
         onChangeText={setSearchText}
         value={searchText}
         placeholder={'Find a quote'}
       />
-      <Pressable onPress={() => setShowFilters(true)}>
-      <Text>More</Text>
-      </Pressable>
+      <Pressable onPress={() => setShowFilters(true)} style={styles.center}>
+      <Feather name="more-horizontal" size={24} color="black" />
+            </Pressable>
       </View>
         {quotes.map((quote) => checkShowQuote(quote) ? <Quote key={quote.quote} quote={quote} /> : null)}
+        {!quotes.filter(checkShowQuote).length ? <Text>No quotes found</Text> : null}
       </ScrollView>
       <Modal
-        animationType="slide"
         visible={showFilters}
         onRequestClose={() => {
           setShowFilters(!showFilters);
         }}
+        transparent={true}
         >
-          <TouchableOpacity style={styles.modal} onPress={() => setCharacterPickerOpen(false)}>
-          <Pressable onPress={() => setShowFilters(false)} style={{padding: 10}}>
-      <Text>Close</Text>
-      </Pressable>
+          <TouchableWithoutFeedback  onPress={() => {
+            setCharacterPickerOpen(false);
+            setActPickerOpen(false);
+            setScenePickerOpen(false);
+            }}
+            >
+              <View style={styles.modal}>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+            <TouchableOpacity onPress={() => setShowFilters(false)} style={{padding: 10}}>
+          <AntDesign name="close" size={32} color="black" />
+          </TouchableOpacity>
+            </View>
+          
           <DropDownPicker
       open={characterPickerOpen}
       value={characters}
@@ -105,20 +114,19 @@ const Quotes = () => {
       zIndex={1000}
       zIndexInverse={3000}
     />
-    <View style={{flexDirection: 'row', padding: 20}}>
-    <Pressable onPress={() => {
+    <View style={{flexDirection: 'row', flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+    <Button onPress={() => {
       setCharacters([]);
       setAct();
       setScene();
-    }} style={{margin: 20}}>
-      <Text>Reset</Text>
-      </Pressable>
-      <Pressable onPress={() => setShowFilters(false)} style={{margin: 20}}>
-      <Text>Search</Text>
-      </Pressable>
+      setCharacterPickerOpen(false);
+      setActPickerOpen(false);
+      setScenePickerOpen(false);
+    }}
+    title="Clear filters" />
     </View>
-    
-          </TouchableOpacity>
+    </View>
+          </TouchableWithoutFeedback>
 
         </Modal>
     </SafeAreaView>
