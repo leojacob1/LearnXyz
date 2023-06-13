@@ -58,10 +58,11 @@ const Learn = ({ quotes }) => {
       setCorrectCount(correctCount + 1);
     }
     setActiveGuess(character);
+    // show correctness and then move on
     setTimeout(() => {
       setActiveGuess();
       setActiveQuotes(activeQuotes.slice(1));
-    }, 200);
+    }, 1000);
   };
 
   const resetQuotes = () => {

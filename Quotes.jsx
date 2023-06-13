@@ -86,7 +86,9 @@ const Quotes = ({ quotes }) => {
           ) : null
         )}
         {!quotes.filter(checkShowQuote).length ? (
-          <Text>No quotes found</Text>
+          <View style={{ margin: 10 }}>
+            <Text>No matching quotes</Text>
+          </View>
         ) : null}
       </ScrollView>
       <Modal
