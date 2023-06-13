@@ -16,8 +16,6 @@ import Quote from "./Quote";
 import styles from "./styles";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
-import db from "./firestore";
-import { collection, getDocs } from "firebase/firestore";
 
 const Quotes = ({ quotes }) => {
   const [searchText, setSearchText] = useState("");
@@ -131,6 +129,7 @@ const Quotes = ({ quotes }) => {
               placeholder={"Select characters"}
               zIndex={3000}
               zIndexInverse={1000}
+              style={{ marginTop: 20 }}
             />
             <DropDownPicker
               open={actPickerOpen}
@@ -142,6 +141,7 @@ const Quotes = ({ quotes }) => {
               placeholder={"Select act"}
               zIndex={2000}
               zIndexInverse={2000}
+              style={{ marginTop: 20 }}
             />
             <DropDownPicker
               open={scenePickerOpen}
@@ -153,6 +153,7 @@ const Quotes = ({ quotes }) => {
               placeholder={"Select scene"}
               zIndex={1000}
               zIndexInverse={3000}
+              style={{ marginTop: 20 }}
             />
             <View
               style={{

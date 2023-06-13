@@ -11,7 +11,8 @@ const Quote = ({ quote: data }) => {
           {" "}
           says in {act}, {scene}:{"\n"}
         </Text>
-        <Text style={{ fontWeight: "bold" }}>"{quote}"</Text>
+        {`\n`}
+        <Text style={{ fontWeight: "bold", lineHeight: 20 }}>"{quote}"</Text>
       </Text>
     </View>
   );
