@@ -36,7 +36,14 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     zIndex: 5000,
-  }
+  },
+  halfModal: {
+    padding: 30,
+    backgroundColor: '#FCF1E9',
+    height: '100%',
+    marginTop: 'auto',
+    height: '50%'
+  },
 });
 
 export default styles;

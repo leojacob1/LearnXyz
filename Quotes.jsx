@@ -4,6 +4,7 @@ import Quote from './Quote';
 import styles from './styles';
 import { Feather, AntDesign } from '@expo/vector-icons'; 
 import DropDownPicker from 'react-native-dropdown-picker';
+import QuoteModal from './QuoteModal';
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState([]);
@@ -18,6 +19,7 @@ const Quotes = () => {
   const [sceneOptions, setSceneOptions] = useState(Array.from({length: 5}, (_, i) => i + 1).map((i) => ({label: `Scene ${i}`, value: `Scene ${i}`})));
   const [scene, setScene] = useState();
   const [scenePickerOpen, setScenePickerOpen] = useState(false);
+  const [showQuote, setShowQuote] = useState(null);
 
   useEffect(() => {
     fetch("https://gold-prepared-barnacle-234.mypinata.cloud/ipfs/QmVz9dLBsw8aanRqwF6sGaR7VQAztUfYULvjdWC1q5EnC9")
@@ -57,7 +59,7 @@ const Quotes = () => {
       <Feather name="more-horizontal" size={24} color="black" />
             </Pressable>
       </View>
-        {quotes.map((quote) => checkShowQuote(quote) ? <Quote key={quote.quote} quote={quote} /> : null)}
+        {quotes.map((quote) => checkShowQuote(quote) ? <Quote key={quote.quote} quote={quote} setShowQuote={setShowQuote} /> : null)}
         {!quotes.filter(checkShowQuote).length ? <Text>No quotes found</Text> : null}
       </ScrollView>
       <Modal
@@ -65,7 +67,6 @@ const Quotes = () => {
         onRequestClose={() => {
           setShowFilters(!showFilters);
         }}
-        transparent={true}
         >
           <TouchableWithoutFeedback  onPress={() => {
             setCharacterPickerOpen(false);
@@ -129,6 +130,7 @@ const Quotes = () => {
           </TouchableWithoutFeedback>
 
         </Modal>
+        <QuoteModal quote={showQuote} setShowQuote={setShowQuote} />
     </SafeAreaView>
   )
 }
