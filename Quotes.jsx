@@ -20,8 +20,7 @@ import QuoteModal from "./QuoteModal";
 import db from "./firestore";
 import { collection, getDocs } from "firebase/firestore";
 
-const Quotes = ({ navigation }) => {
-  const [quotes, setQuotes] = useState([]);
+const Quotes = ({ quotes }) => {
   const [searchText, setSearchText] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [characterOptions, setCharacterOptions] = useState([]);
@@ -46,23 +45,14 @@ const Quotes = ({ navigation }) => {
   const [showQuote, setShowQuote] = useState(null);
 
   useEffect(() => {
-    async function fetchQuotes() {
-      const dbQuotes = [];
-      const querySnapshot = await getDocs(collection(db, "quotes"));
-      querySnapshot.forEach((doc) => {
-        dbQuotes.push(doc.data());
-      });
-      setQuotes(dbQuotes);
+    if (quotes) {
       setCharacterOptions(
-        [
-          "All characters",
-          ...new Set(dbQuotes.map((quote) => quote.character)),
-        ].map((character) => ({ label: character, value: character }))
+        [...new Set(quotes.map((quote) => quote.character))].map(
+          (character) => ({ label: character, value: character })
+        )
       );
     }
-
-    fetchQuotes();
-  }, []);
+  }, [quotes]);
 
   const checkShowQuote = (quote) => {
     if (

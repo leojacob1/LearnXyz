@@ -2,10 +2,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Quotes from "./Quotes";
 import Learn from "./Learn";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import db from "./firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const Tab = createBottomTabNavigator();
 
 const TabsBar = () => {
+  const [quotes, setQuotes] = useState([]);
+  useEffect(() => {
+    async function fetchQuotes() {
+      const dbQuotes = [];
+      const querySnapshot = await getDocs(collection(db, "quotes"));
+      querySnapshot.forEach((doc) => {
+        dbQuotes.push(doc.data());
+      });
+      setQuotes(dbQuotes);
+    }
+
+    fetchQuotes();
+  }, []);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -14,7 +30,6 @@ const TabsBar = () => {
     >
       <Tab.Screen
         name="Home"
-        component={Quotes}
         options={{
           tabBarIcon: ({ focused }) => (
             <Feather
@@ -25,10 +40,11 @@ const TabsBar = () => {
           ),
           tabBarShowLabel: false,
         }}
-      />
+      >
+        {() => <Quotes quotes={quotes} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Learn"
-        component={Learn}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -39,7 +55,9 @@ const TabsBar = () => {
           ),
           tabBarShowLabel: false,
         }}
-      />
+      >
+        {() => <Learn quotes={quotes} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
