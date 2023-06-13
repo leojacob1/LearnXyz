@@ -18,3 +18,4 @@ web-build/
 
 serviceAccount.json
 data.json
+firebaseConfig.js
