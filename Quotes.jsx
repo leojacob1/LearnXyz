@@ -5,6 +5,8 @@ import styles from './styles';
 import { Feather, AntDesign } from '@expo/vector-icons'; 
 import DropDownPicker from 'react-native-dropdown-picker';
 import QuoteModal from './QuoteModal';
+import db from './firestore';
+import { collection, getDocs } from "firebase/firestore"; 
 
 const Quotes = () => {
   const [quotes, setQuotes] = useState([]);
@@ -22,17 +24,18 @@ const Quotes = () => {
   const [showQuote, setShowQuote] = useState(null);
 
   useEffect(() => {
-    fetch("https://gold-prepared-barnacle-234.mypinata.cloud/ipfs/QmVz9dLBsw8aanRqwF6sGaR7VQAztUfYULvjdWC1q5EnC9")
-      .then((resp) => {
-        return resp.json()
-      })
-      .then((data) => {
-        setQuotes(data);
-        setCharacterOptions([ 'All characters', ... new Set(data.map((quote) => (quote.character)))].map((character) => ({ label: character, value: character })));
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    async function fetchQuotes() {
+      const dbQuotes = [];
+      const querySnapshot = await getDocs(collection(db, "quotes"));
+      querySnapshot.forEach((doc) => {
+        dbQuotes.push(doc.data());
+      });
+      setQuotes(dbQuotes);
+      setCharacterOptions([ 'All characters', ... new Set(dbQuotes.map((quote) => (quote.character)))].map((character) => ({ label: character, value: character })));
+    };
+ 
+    fetchQuotes();
+    
   }, []);
 
   const checkShowQuote = (quote) => {
